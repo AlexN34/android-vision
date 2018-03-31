@@ -182,11 +182,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void createCameraSource(boolean autoFocus, boolean useFlash) {
         Context context = getApplicationContext();
-        // TODO: Create the TextRecognizer
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        // TODO: Set the TextRecognizer's Processor.
         textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
-        // TODO: Check if the TextRecognizer is operational.
         if (!textRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies are not yet available");
             //Check for low storage. if there is low storage, the native library
@@ -200,7 +197,6 @@ public final class OcrCaptureActivity extends AppCompatActivity {
             }
         }
 
-        // TODO: Create the mCameraSource using the TextRecognizer.
         mCameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1280, 1024)

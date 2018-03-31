@@ -19,12 +19,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
@@ -90,7 +95,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         rect.top = translateY(rect.top);
         rect.right = translateX(rect.right);
         rect.bottom = translateX(rect.bottom);
-        return (rect.left < x && rect.right > x && rect.top < y && rect.bottom > y);
+        return (rect.left < x && rect.right > x && rect.bottom < y && 2 * rect.bottom - rect.top > y);
     }
 
     /**
@@ -105,9 +110,9 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         //Draws the bounding box around the TextBlock.
         RectF rect = new RectF(mText.getBoundingBox());
         rect.left = translateX(rect.left);
-        rect.top = translateY(rect.top);
+        rect.top = translateY(rect.bottom);
         rect.right = translateX(rect.right);
-        rect.bottom = translateX(rect.bottom);
+        rect.bottom = translateY(2 * rect.bottom - rect.top);
         canvas.drawRect(rect, sRectPaint);
 
         // canvas.drawText(mText.getValue(), rect.left, rect.bottom, sTextPaint);
@@ -115,8 +120,35 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
         List<? extends Text> textComponents = mText.getComponents();
         for (Text currentText : textComponents) {
             float left = translateX(currentText.getBoundingBox().left);
-            float bottom = translateX(currentText.getBoundingBox().bottom);
-            canvas.drawText(mText.getValue(), left, bottom, sTextPaint);
+            float bottom = translateY(2 * currentText.getBoundingBox().bottom - currentText.getBoundingBox().top);
+//            canvas.drawText(mText.getValue(), left, bottom, sTextPaint);
+            canvas.drawText(detectCurrency(mText.getValue()), left, bottom, sTextPaint);
+        }
+    }
+
+
+
+    // Assume everything passed in will be a currency (filtered by processor)
+    private String detectCurrency(String inputText) {
+        // find part after $ symbol
+        String pattern = "^.*\\$[\\-]*([0-9]+[\\.]*[0-9]*).*$";
+        // replace \\$ with currency in question - lookup table EUR => €
+//        String pattern = "^\\$?(?=\\(.*\\)|[^()]*$)\\(?\\d{1,3}(,?\\d{3})?(\\.\\d\\d?)?\\)?$";
+        Pattern r = Pattern.compile(pattern);
+        Matcher matcher = r.matcher(inputText);
+        String convertedString = "Err: No currency value after $ detected";
+        if (!matcher.find()) {
+            return convertedString;
+        } else {
+            // parse as number
+            // multiply conversion factor
+//            Log.d(TAG, "\n === Matched value for currency: " + matcher.group(1) + "(end) === \n");
+
+            double currencyToConvert = Double.parseDouble(matcher.group(1));
+            double conversion = 0.78;
+            double finalValue = currencyToConvert / conversion;
+            // add $ and convert to string and return
+            return String.format("AUD: $%.10g", finalValue);
         }
     }
 }

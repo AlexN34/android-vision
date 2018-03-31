@@ -40,14 +40,20 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
        SparseArray<TextBlock> items = detections.getDetectedItems();
        for (int i = 0; i < items.size(); ++i) {
            TextBlock item = items.valueAt(i);
-           if (item != null && item.getValue() != null) {
+           if (item != null && item.getValue() != null && isValidCurrency(item.getValue())) {
                Log.d("Processor", "Text detected! " + item.getValue());
+               if (isValidCurrency(item.getValue())) {
+                   Log.d("Processor", "Currency detected!" + item.getValue());
+               }
+               OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
+               mGraphicOverlay.add(graphic);
            }
-           OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
-           mGraphicOverlay.add(graphic);
        }
     }
 
+    private boolean isValidCurrency(String inputText) {
+        return inputText.contains("$");
+    }
     @Override
     public void release() {
         mGraphicOverlay.clear();
