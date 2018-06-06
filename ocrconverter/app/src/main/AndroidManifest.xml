@@ -30,7 +30,7 @@
        <activity
             android:name="com.google.android.gms.samples.vision.ocrreader.NavigationActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar" >
+            android:theme="@style/AppBarOverlay" >
            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

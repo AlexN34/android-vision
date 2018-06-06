@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="My account">
+        <Preference
+            android:title="Username"
+            android:summary="Test"
+            android:key="username"/>
+        <EditTextPreference
+            android:title="Email"
+            android:summary="Specify an email"
+            android:key="email"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Advanced">
+        <ListPreference
+            android:title="Start Currency"
+            android:summary="Choose the currency you are scanning in"
+            android:key="start_currency"
+            android:entries="@array/currencies"
+            android:entryValues="@array/currencies"
+            />
+
+        <ListPreference
+            android:title="End Currency"
+            android:summary="Choose the currency you are interested in"
+            android:key="end_currency"
+            android:entries="@array/currencies"
+            android:entryValues="@array/currencies" />
+
+         <Preference
+            android:title="Conversion rate"
+            android:summary="Start Currency: End Currency = x"
+            android:key="current_rate" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

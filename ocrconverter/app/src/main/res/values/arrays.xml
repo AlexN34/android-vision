@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <array name="country">
+      <item>Australia</item>
+      <item>UK</item>
+      <item>USA</item>
+   </array>
+   <array name="currencies">
+      <item>AUD</item>
+      <item>EUR</item>
+      <item>USD</item>
+      <item>GBP</item>
+   </array>
+   <array name="countryValues">
+      <item>5</item>
+      <item>10</item>
+      <item>15</item>
+   </array>
+
+</resources>
