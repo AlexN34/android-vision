@@ -11,10 +11,7 @@
       <item>USD</item>
       <item>GBP</item>
    </array>
-   <array name="countryValues">
-      <item>5</item>
-      <item>10</item>
-      <item>15</item>
+   <array name="currencyValues">
    </array>
 
 </resources>

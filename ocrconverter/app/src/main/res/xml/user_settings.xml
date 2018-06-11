@@ -16,7 +16,7 @@
         android:title="Advanced">
         <ListPreference
             android:title="Start Currency"
-            android:summary="Choose the currency you are scanning in"
+            android:summary="%s"
             android:key="start_currency"
             android:entries="@array/currencies"
             android:entryValues="@array/currencies"
@@ -24,15 +24,16 @@
 
         <ListPreference
             android:title="End Currency"
-            android:summary="Choose the currency you are interested in"
+            android:summary="%s"
             android:key="end_currency"
             android:entries="@array/currencies"
             android:entryValues="@array/currencies" />
 
-         <Preference
-            android:title="Conversion rate"
-            android:summary="Start Currency: End Currency = x"
-            android:key="current_rate" />
+        <com.google.android.gms.samples.vision.ocrreader.ui.preferences.SubstitutablePreference
+            android:title="Conversion Rate"
+            android:summary="%s"
+            android:key="conversion_rates"
+            />
     </PreferenceCategory>
 
 </PreferenceScreen>
