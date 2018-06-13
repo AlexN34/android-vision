@@ -17,6 +17,7 @@ public class SubstitutablePreference extends EditTextPreference {
         super(context);
     }
 
+
     @Override
     public CharSequence getSummary() {
         String summary = super.getSummary().toString();

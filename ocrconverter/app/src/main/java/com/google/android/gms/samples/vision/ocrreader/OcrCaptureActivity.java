@@ -17,7 +17,6 @@ package com.google.android.gms.samples.vision.ocrreader;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,10 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
@@ -43,11 +38,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import com.google.android.gms.*;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.CameraSource;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.CameraSourcePreview;
 import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
@@ -191,7 +185,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     private void createCameraSource(boolean autoFocus, boolean useFlash) {
         Context context = getApplicationContext();
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
+        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, getPreferences(MODE_PRIVATE)));
         if (!textRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies are not yet available");
             //Check for low storage. if there is low storage, the native library

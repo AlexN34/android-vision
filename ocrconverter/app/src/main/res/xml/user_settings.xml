@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="My account">
-        <Preference
-            android:title="Username"
-            android:summary="Test"
-            android:key="username"/>
-        <EditTextPreference
-            android:title="Email"
-            android:summary="Specify an email"
-            android:key="email"
-            />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="Advanced">
+        android:title="Currency settings">
         <ListPreference
             android:title="Start Currency"
             android:summary="%s"
@@ -29,10 +17,10 @@
             android:entries="@array/currencies"
             android:entryValues="@array/currencies" />
 
-        <com.google.android.gms.samples.vision.ocrreader.ui.preferences.SubstitutablePreference
+        <Preference
             android:title="Conversion Rate"
-            android:summary="%s"
-            android:key="conversion_rates"
+            android:summary="The conversion rate of your Start Currency : End Currency is shown here"
+            android:key="conversion_rate"
             />
     </PreferenceCategory>
 

@@ -44,9 +44,11 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static Paint sRectPaint;
     private static Paint sTextPaint;
     private final TextBlock mText;
+    private float conversionRate;
 
-    OcrGraphic(GraphicOverlay overlay, TextBlock text) {
+    OcrGraphic(GraphicOverlay overlay, TextBlock text, Float conversionRate) {
         super(overlay);
+        this.conversionRate = conversionRate;
 
         mText = text;
 
@@ -136,7 +138,8 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
 //        String pattern = "^\\$?(?=\\(.*\\)|[^()]*$)\\(?\\d{1,3}(,?\\d{3})?(\\.\\d\\d?)?\\)?$";
         Pattern r = Pattern.compile(pattern);
         Matcher matcher = r.matcher(inputText);
-        String convertedString = "Err: No currency value after $ detected";
+//        String convertedString = "Err: No currency value after $ detected";
+        String convertedString = "";
         if (!matcher.find()) {
             return convertedString;
         } else {
@@ -145,7 +148,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
 //            Log.d(TAG, "\n === Matched value for currency: " + matcher.group(1) + "(end) === \n");
 
             double currencyToConvert = Double.parseDouble(matcher.group(1));
-            double conversion = 0.78;
+            double conversion = conversionRate;
             double finalValue = currencyToConvert / conversion;
             // add $ and convert to string and return
             return String.format("AUD: $%.10g", finalValue);

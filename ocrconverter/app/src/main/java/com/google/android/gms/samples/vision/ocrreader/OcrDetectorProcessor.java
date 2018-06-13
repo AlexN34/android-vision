@@ -15,6 +15,7 @@
  */
 package com.google.android.gms.samples.vision.ocrreader;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -28,9 +29,11 @@ import com.google.android.gms.vision.text.TextBlock;
  */
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+    Float conversionRate;
 
-    OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay) {
+    OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, SharedPreferences sharedPreferences) {
         mGraphicOverlay = ocrGraphicOverlay;
+        conversionRate = Float.parseFloat(sharedPreferences.getString("conversion_rate", "1"));
     }
 
 
