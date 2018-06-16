@@ -15,6 +15,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,12 @@ import java.util.HashMap;
 /*
 TODO: Show settings using  custom methods
 http://codetheory.in/saving-user-settings-with-android-preferences/
-TODO: make current_rate into user editable field and make that edit preferences
-TODO: set start_currencyToend_currency as keys to be stored - update on change
 TODO: handle potential bugs if we change current_rate without having both currencies
+TODO: handle current rate on first load/ summary
+TODO: Display
+TODO: OCR Screenshot capability/save to gallery
+TODO: Save past conversions (on tap - bring up tag, save in home screen)
+TODO: update via currency API
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 //    @Nullable
@@ -125,6 +129,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 rate = endRate / startRate;
             }
             sharedPreferences.edit().putString("conversion_rate", Float.toString(rate)).apply();
+            Log.d("Settings", "Set conversion rate: " + Float.toString(rate));
         }
     }
 

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.*;
 import com.google.android.gms.common.ConnectionResult;
@@ -185,7 +187,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     private void createCameraSource(boolean autoFocus, boolean useFlash) {
         Context context = getApplicationContext();
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, getPreferences(MODE_PRIVATE)));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay, prefs));
         if (!textRecognizer.isOperational()) {
             Log.w(TAG, "Detector dependencies are not yet available");
             //Check for low storage. if there is low storage, the native library

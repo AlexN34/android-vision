@@ -33,7 +33,8 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
     OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay, SharedPreferences sharedPreferences) {
         mGraphicOverlay = ocrGraphicOverlay;
-        conversionRate = Float.parseFloat(sharedPreferences.getString("conversion_rate", "1"));
+        conversionRate = Float.parseFloat(sharedPreferences.getString("conversion_rate", "-1"));
+        Log.d("Processor", "Processed conversion rate: " + conversionRate.toString());
     }
 
 
@@ -48,7 +49,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                if (isValidCurrency(item.getValue())) {
                    Log.d("Processor", "Currency detected!" + item.getValue());
                }
-               OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
+               OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item, this.conversionRate);
                mGraphicOverlay.add(graphic);
            }
        }
