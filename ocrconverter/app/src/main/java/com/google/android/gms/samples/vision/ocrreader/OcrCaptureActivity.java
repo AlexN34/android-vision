@@ -26,15 +26,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -50,6 +54,8 @@ import com.google.android.gms.samples.vision.ocrreader.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -109,6 +115,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource(autoFocus, useFlash);
+
         } else {
             requestCameraPermission();
         }
@@ -132,6 +139,45 @@ public final class OcrCaptureActivity extends AppCompatActivity {
             }
         };
         tts = new TextToSpeech(this.getApplicationContext(), listener);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_view_ocr);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_screenshot:
+                    View screen = (View) findViewById(R.id.ocr_activity_layout);
+                    Bitmap bmScreen = screen.getDrawingCache();
+                    saveImage(bmScreen);
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    protected void saveImage(Bitmap bmScreen2) {
+        // TODO Auto-generated method stub
+
+        // String fname = "Upload.png";
+        File saved_image_file = new File(
+                Environment.getExternalStorageDirectory()
+                        + "/captured_Bitmap.png");
+        if (saved_image_file.exists())
+            saved_image_file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(saved_image_file);
+            bmScreen2.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -207,7 +253,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
                 .setRequestedPreviewSize(1280, 1024)
                 .setRequestedFps(15.0f)
                 .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
-                .setFocusMode(autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE: null)
+                .setFocusMode(autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO: null)
         .build();
 
     }

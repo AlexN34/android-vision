@@ -19,5 +19,6 @@
     <string name="title_home">Home</string>
     <string name="title_camera">Scanner</string>
     <string name="title_settings">Settings</string>
+    <string name="title_ocr_screenshot">Capture</string>
 
 </resources>

@@ -28,14 +28,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /*
-TODO: Show settings using  custom methods
 http://codetheory.in/saving-user-settings-with-android-preferences/
-TODO: handle potential bugs if we change current_rate without having both currencies
-TODO: handle current rate on first load/ summary
-TODO: Display
+TODO: Toggle symbol to look for and display format symbol
+TODO: get permissions to save files
 TODO: OCR Screenshot capability/save to gallery
-TODO: Save past conversions (on tap - bring up tag, save in home screen)
 TODO: update via currency API
+TODO: Save past conversions (on tap - bring up tag, save in home screen)
+TODO: update past conversions on refresh
+TODO: Tap to focus is nontrivial.. find callback for Camera.Area. Changed to video mode for now
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 //    @Nullable
@@ -58,6 +58,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         HashMap<String, Float> currencyMap = new HashMap<>();
         PreferenceScreen screen = this.getPreferenceScreen();
         PreferenceCategory category = new PreferenceCategory(screen.getContext());
+        updateCurrentRate(sharedPrefs);
         category.setTitle("Currency values");
         screen.addPreference(category);
         for (int i = 0; i < defaultCurrencies.length; i++) {
@@ -74,7 +75,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             curPref.setSummary("%s");
             screen.addPreference(curPref);
         }
-        updateCurrentRate(sharedPrefs);
     }
 
     @Override
@@ -119,9 +119,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         String startCurrency = sharedPreferences.getString("start_currency", "");
         String endCurrency = sharedPreferences.getString("end_currency", "");
         if (!endCurrency.equals("") && !startCurrency.equals("")) {
-            if (!findPreference("conversion_rate").getSummary().equals("%s")) {
-                findPreference("conversion_rate").setSummary("%s");
-            }
+
             Float startRate = Float.parseFloat(sharedPreferences.getString(startCurrency, "-1"));
             Float endRate = Float.parseFloat(sharedPreferences.getString(endCurrency, "-1"));
             Float rate = Float.parseFloat("0");
@@ -130,6 +128,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
             sharedPreferences.edit().putString("conversion_rate", Float.toString(rate)).apply();
             Log.d("Settings", "Set conversion rate: " + Float.toString(rate));
+//            if (!findPreference("conversion_rate").getSummary().equals("%s")) {
+//                findPreference("conversion_rate").setSummary("%s");
+//            }
+            findPreference("conversion_rate").setSummary(Float.toString(rate));
+
         }
     }
 
