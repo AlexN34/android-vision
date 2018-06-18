@@ -27,6 +27,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -113,11 +115,18 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
+        int rs = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+//        if (rc == PackageManager.PERMISSION_GRANTED) {
+        if (rc == PackageManager.PERMISSION_GRANTED && rs == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
             createCameraSource(autoFocus, useFlash);
-
         } else {
-            requestCameraPermission();
+//            if (rc != PackageManager.PERMISSION_GRANTED) {
+                requestCameraPermission();
+//            } else if (rs != PackageManager.PERMISSION_GRANTED) {
+//                requestStoragePermission();
+//            }
         }
 
         gestureDetector = new GestureDetector(this, new CaptureGestureListener());
@@ -151,16 +160,26 @@ public final class OcrCaptureActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_screenshot:
                     View screen = (View) findViewById(R.id.ocr_activity_layout);
-                    Bitmap bmScreen = screen.getDrawingCache();
-                    saveImage(bmScreen);
+                    saveImage(screen);
                     return true;
             }
             return false;
         }
     };
 
-    protected void saveImage(Bitmap bmScreen2) {
+    protected void saveImage(View v) {
         // TODO Auto-generated method stub
+        v.setDrawingCacheEnabled(true);
+
+        // this is the important code :)
+        // Without it the view will have a dimension of 0,0 and the bitmap will be null
+        v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+
+        v.buildDrawingCache(true);
+        Bitmap bmScreen2 = Bitmap.createBitmap(v.getDrawingCache());
+        v.setDrawingCacheEnabled(false); // clear drawing cache
 
         // String fname = "Upload.png";
         File saved_image_file = new File(
@@ -180,18 +199,30 @@ public final class OcrCaptureActivity extends AppCompatActivity {
 
     }
 
+
+
     /**
-     * Handles the requesting of the camera permission.  This includes
+     * Handles the requesting of the camera permission (and storage).  This includes
      * showing a "Snackbar" message of why the permission is needed then
      * sending the request.
      */
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+        final String[] permissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            return;
+        }
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            return;
+        }
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
             return;
         }
