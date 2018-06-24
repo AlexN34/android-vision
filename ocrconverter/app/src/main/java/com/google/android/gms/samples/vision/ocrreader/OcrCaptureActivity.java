@@ -44,6 +44,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.preference.PreferenceManager;
 
@@ -159,7 +160,7 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_screenshot:
-                    View screen = (View) findViewById(R.id.ocr_activity_layout);
+                    View screen = (View) findViewById(R.id.content_frame);
                     saveImage(screen);
                     return true;
             }
@@ -169,14 +170,14 @@ public final class OcrCaptureActivity extends AppCompatActivity {
 
     protected void saveImage(View v) {
         // TODO Auto-generated method stub
+        v = v.getRootView();
+//        v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//        FrameLayout.LayoutParams params = (android.widget.FrameLayout.LayoutParams) v.getLayoutParams();
+//        params.width  = width;
+//        params.height = height;
+//        myView.setLayoutParams(params);
+
         v.setDrawingCacheEnabled(true);
-
-        // this is the important code :)
-        // Without it the view will have a dimension of 0,0 and the bitmap will be null
-        v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
-
         v.buildDrawingCache(true);
         Bitmap bmScreen2 = Bitmap.createBitmap(v.getDrawingCache());
         v.setDrawingCacheEnabled(false); // clear drawing cache

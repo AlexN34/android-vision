@@ -30,11 +30,12 @@ import java.util.HashMap;
 /*
 http://codetheory.in/saving-user-settings-with-android-preferences/
 TODO: Toggle symbol to look for and display format symbol
-TODO: get permissions to save files
-TODO: OCR Screenshot capability/save to gallery
 TODO: update via currency API
 TODO: Save past conversions (on tap - bring up tag, save in home screen)
-TODO: update past conversions on refresh
+TODO: update current value vs past conversions on refresh
+
+LATER
+TODO: OCR Screenshot capability/save to gallery - screenshot including camera is nontrivial
 TODO: Tap to focus is nontrivial.. find callback for Camera.Area. Changed to video mode for now
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
